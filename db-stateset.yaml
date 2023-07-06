@@ -21,6 +21,9 @@ spec:
           volumeMounts:
             - name: db-vol
               mountPath: /var/lib/postgres/data
+          env:
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
           envFrom:
             - configMapRef:
                 name: db-config-map
