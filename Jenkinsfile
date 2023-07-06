@@ -11,23 +11,23 @@ pipeline {
     }
     stage('Deploying Manifests to the K8 Cluster') {
       steps {
-        sh 'kubectl --kubeconfig=${KUBECONFIG} apply -f /var/lib/jenkins/workspace/postgres-k8/db-map.yaml'
-        sh 'kubectl --kubeconfig=${KUBECONFIG} apply -f /var/lib/jenkins/workspace/postgres-k8/pv.yaml'
-        sh 'kubectl --kubeconfig=${KUBECONFIG} apply -f /var/lib/jenkins/workspace/postgres-k8/pvc.yaml'
-        sh 'kubectl --kubeconfig=${KUBECONFIG} apply -f /var/lib/jenkins/workspace/postgres-k8/db-stateset.yaml'
-        sh 'kubectl --kubeconfig=${KUBECONFIG} apply -f /var/lib/jenkins/workspace/postgres-k8/db-svc.yaml'
+        sh 'sudo kubectl --kubeconfig=${KUBECONFIG} apply -f /var/lib/jenkins/workspace/postgres-k8/db-map.yaml'
+        sh 'sudo kubectl --kubeconfig=${KUBECONFIG} apply -f /var/lib/jenkins/workspace/postgres-k8/pv.yaml'
+        sh 'sudo kubectl --kubeconfig=${KUBECONFIG} apply -f /var/lib/jenkins/workspace/postgres-k8/pvc.yaml'
+        sh 'sudo kubectl --kubeconfig=${KUBECONFIG} apply -f /var/lib/jenkins/workspace/postgres-k8/db-stateset.yaml'
+        sh 'sudo kubectl --kubeconfig=${KUBECONFIG} apply -f /var/lib/jenkins/workspace/postgres-k8/db-svc.yaml'
       }
     }
     stage('Fetching Database') {
       steps {
-        sh 'kubectl --kubeconfig=${KUBECONFIG} apply -f /var/lib/jenkins/workspace/postgres-k8/fetch-job.yaml'
+        sh 'sudo kubectl --kubeconfig=${KUBECONFIG} apply -f /var/lib/jenkins/workspace/postgres-k8/fetch-job.yaml'
         }
       }
     
     stage('Storing artifacts') {
       steps {
         script{
-            sh 'kubectl cp fetch-db-pod:/mnt/database.sql database.sql'
+            sh 'sudo kubectl --kubeconfig=${KUBECONFIG} cp fetch-db-pod:/mnt/database.sql database.sql'
             archiveArtifacts artifacts: 'database.sql' 
         }
       }
