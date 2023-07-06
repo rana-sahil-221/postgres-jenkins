@@ -1,0 +1,32 @@
+pipeline {
+  environment {
+    KUBECONFIG = credentials('kube_id')
+  }
+  stages {
+    stage('Cloning Repo') {
+      steps {
+        git branch:'main',url: 'https://github.com/rana-sahil-221/postgres-jenkins.git'
+      }
+    }
+    stage('Deploying Manifests to the K8 Cluster') {
+      steps {
+        sh 'kubectl --kubeconfig=${KUBECONFIG} apply -f /var/lib/jenkins/workspace/postgres-k8/db-map.yaml'
+        sh 'kubectl --kubeconfig=${KUBECONFIG} apply -f /var/lib/jenkins/workspace/postgres-k8/pv.yaml'
+        sh 'kubectl --kubeconfig=${KUBECONFIG} apply -f /var/lib/jenkins/workspace/postgres-k8/pvc.yaml'
+        sh 'kubectl --kubeconfig=${KUBECONFIG} apply -f /var/lib/jenkins/workspace/postgres-k8/db-stateset.yaml'
+        sh 'kubectl --kubeconfig=${KUBECONFIG} apply -f /var/lib/jenkins/workspace/postgres-k8/db-svc.yaml'
+      }
+    }
+    stage('Fetching Database') {
+      steps {
+        sh 'kubectl --kubeconfig=${KUBECONFIG} apply -f /var/lib/jenkins/workspace/postgres-k8/fetch-job.yaml'
+        }
+      }
+    
+    stage('Storing artifacts') {
+      steps {
+        sh 'kubectl cp fetch-db-pod:/mnt/database.sql database.sql'
+        }
+      }
+    }
+  }
