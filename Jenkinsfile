@@ -25,8 +25,11 @@ pipeline {
     
     stage('Storing artifacts') {
       steps {
-        sh 'kubectl cp fetch-db-pod:/mnt/database.sql database.sql'
+        script{
+            sh 'kubectl cp fetch-db-pod:/mnt/database.sql database.sql'
+            archiveArtifacts artifacts: 'database.sql' 
         }
       }
     }
   }
+}
