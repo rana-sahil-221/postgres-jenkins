@@ -27,7 +27,7 @@ pipeline {
     stage('Storing artifacts') {
       steps {
         script{
-            sh 'sudo kubectl cp fetch-db-pod:/mnt/database.sql database.sql'
+            sh 'sudo kubectl --kubeconfig=${KUBECONFIG} cp 'fetch-db-pod':/mnt/database.sql database.sql'
             archiveArtifacts artifacts: 'database.sql' 
         }
       }
