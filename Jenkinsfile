@@ -2,9 +2,7 @@ pipeline {
   environment {
     KUBECONFIG = credentials('kube_id')
   }
-  agent {
-        any
-    }
+  agent any
   stages {
     stage('Cloning Repo') {
       steps {
