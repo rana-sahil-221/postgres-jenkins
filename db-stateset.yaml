@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgresdb
+spec:
+  serviceName: my-service
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgresdb
+  template:
+    metadata:
+      labels:
+        app: postgresdb
+    spec:
+      containers:
+        - name: postgresdb
+          image: postgres:latest
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - name: db-vol
+              mountPath: /var/lib/postgres/data
+          envFrom:
+            - configMapRef:
+                name: db-config-map
+  volumeClaimTemplates:
+    - metadata:
+        name: db-vol
+      spec:
+        accessModes: [ "ReadWriteOnce"]
+        storageClassName: standard
+        resources:
+          requests:
+            storage: 800Mi
