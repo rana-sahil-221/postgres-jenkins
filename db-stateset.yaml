@@ -32,7 +32,7 @@ spec:
         name: db-vol
       spec:
         accessModes: [ "ReadWriteOnce"]
-        storageClassName: standard
+        storageClassName: my-sg-class
         resources:
           requests:
             storage: 800Mi
