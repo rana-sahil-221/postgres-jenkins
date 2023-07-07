@@ -5,7 +5,7 @@ metadata:
   labels:
     type: local
 spec:
-  storageClassName: my-sg-class
+  storageClassName: standard
   capacity:
     storage: 700Mi
   accessModes:
