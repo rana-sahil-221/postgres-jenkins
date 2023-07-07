@@ -1,10 +1,8 @@
 pipeline {
   environment {
-    KUBECONFIG = credentials('kube_vagrant_id')
+    KUBECONFIG = credentials('kube_id')
   }
-  agent {
-        label 'vagrant-vm'
-    }
+  agent any
   stages {
     stage('Cloning Repo') {
       steps {
@@ -13,16 +11,16 @@ pipeline {
     }
     stage('Deploying Manifests to the K8 Cluster') {
       steps {
-        sh 'sudo kubectl --kubeconfig=${KUBECONFIG} apply -f /opt/jenkins/workspace/postgres-vagrant/db-map.yaml'
-        sh 'sudo kubectl --kubeconfig=${KUBECONFIG} apply -f /opt/jenkins/workspace/postgres-vagrant/pv.yaml'
-        sh 'sudo kubectl --kubeconfig=${KUBECONFIG} apply -f /opt/jenkins/workspace/postgres-vagrant/pvc.yaml'
-        sh 'sudo kubectl --kubeconfig=${KUBECONFIG} apply -f /opt/jenkins/workspace/postgres-vagrant/db-stateset.yaml'
-        sh 'sudo kubectl --kubeconfig=${KUBECONFIG} apply -f /opt/jenkins/workspace/postgres-vagrant/db-svc.yaml'
+        sh 'sudo kubectl --kubeconfig=${KUBECONFIG} apply -f /var/lib/jenkins/workspace/postgres-jenkins/db-map.yaml'
+        sh 'sudo kubectl --kubeconfig=${KUBECONFIG} apply -f /var/lib/jenkins/workspace/postgres-jenkins/pv.yaml'
+        sh 'sudo kubectl --kubeconfig=${KUBECONFIG} apply -f /var/lib/jenkins/workspace/postgres-jenkins/pvc.yaml'
+        sh 'sudo kubectl --kubeconfig=${KUBECONFIG} apply -f /var/lib/jenkins/workspace/postgres-jenkins/db-stateset.yaml'
+        sh 'sudo kubectl --kubeconfig=${KUBECONFIG} apply -f /var/lib/jenkins/workspace/postgres-jenkins/db-svc.yaml'
       }
     }
     stage('Fetching Database') {
       steps {
-        sh 'sudo kubectl --kubeconfig=${KUBECONFIG} apply -f /opt/jenkins/workspace/postgres-vagrant/fetch-job.yaml'
+        sh 'sudo kubectl --kubeconfig=${KUBECONFIG} apply -f /var/lib/jenkins/workspace/postgres-jenkins/fetch-job.yaml'
         }
       }
     
