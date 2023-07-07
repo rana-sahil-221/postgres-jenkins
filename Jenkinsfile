@@ -12,23 +12,27 @@ pipeline {
     stage('Deploying Manifests to the K8 Cluster') {
       steps {
         sh 'sudo kubectl --kubeconfig=${KUBECONFIG} apply -f /var/lib/jenkins/workspace/postgres-jenkins/db-map.yaml'
-        sh 'sudo kubectl --kubeconfig=${KUBECONFIG} apply -f /var/lib/jenkins/workspace/postgres-jenkins/pv.yaml'
-        sh 'sudo kubectl --kubeconfig=${KUBECONFIG} apply -f /var/lib/jenkins/workspace/postgres-jenkins/pvc.yaml'
         sh 'sudo kubectl --kubeconfig=${KUBECONFIG} apply -f /var/lib/jenkins/workspace/postgres-jenkins/db-stateset.yaml'
         sh 'sudo kubectl --kubeconfig=${KUBECONFIG} apply -f /var/lib/jenkins/workspace/postgres-jenkins/db-svc.yaml'
       }
     }
-    stage('Fetching Database') {
+    stage('Fetching Database and storing artifacts') {
       steps {
-        sh 'sudo kubectl --kubeconfig=${KUBECONFIG} apply -f /var/lib/jenkins/workspace/postgres-jenkins/fetch-job.yaml'
+          script{
+            def dbList=sh(script:"PGPASSWORD=Sahil@123 psql -h localhost -U sahil -c 'SELECT datname FROM pg_database' -t", returnStdout:true).trim().split('\n')
+            echo "Available Databases:"
+            echo dbList.join('\n')
+
+            def userInput=input(message: 'Enter the database name: ',parameters: [string(name: 'databaseName', defaultValue: '', description: 'Name of the database to fetch')])
+            sh "PGPASSWORD=Sahil@123 pg_dump -h localhost -U sahil ${userInput} > database.sql"
+          }
         }
       }
     
-    stage('Storing artifacts') {
+    stage('Storing Artifacts') {
       steps {
-        script{
-            sh 'sudo kubectl --kubeconfig=${KUBECONFIG} cp fetch-db-pod:/mnt/database.sql database.sql'
-            archiveArtifacts artifacts: 'database.sql' 
+        script {
+          archiveArtifacts artifacts: 'database.sql'
         }
       }
     }

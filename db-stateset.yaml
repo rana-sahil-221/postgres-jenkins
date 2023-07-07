@@ -16,23 +16,33 @@ spec:
       containers:
         - name: postgresdb
           image: postgres:latest
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 5432
           volumeMounts:
             - name: db-vol
               mountPath: /var/lib/postgres/data
+            - name: init-scripts
+              mountPath: /docker-entrypoint-initdb.d
           env:
             - name: PGDATA
               value: /var/lib/postgresql/data/pgdata
-          envFrom:
-            - configMapRef:
-                name: db-config-map
+            - name: POSTGRES_USER
+              value: sahil
+            - name: POSTGRES_PASSWORD
+              value: Sahil@123
+            - name: PGPASSWORD
+              value: Sahil@123
+      volumes:
+        - name: init-scripts
+          configMap: 
+            name: dbmap-init
   volumeClaimTemplates:
     - metadata:
         name: db-vol
       spec:
         accessModes: [ "ReadWriteOnce"]
-        storageClassName: standard
+        storageClassName: my-sg-class
         resources:
           requests:
             storage: 800Mi
