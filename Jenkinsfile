@@ -2,7 +2,9 @@ pipeline {
   environment {
     KUBECONFIG = credentials('kube_vagrant_id')
   }
-  agent any
+  agent {
+        label 'vagrant-vm'
+    }
   stages {
     stage('Cloning Repo') {
       steps {
