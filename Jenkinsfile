@@ -3,21 +3,11 @@ pipeline {
     KUBECONFIG = credentials('kube_id')
   }
   agent any
-   parameters {
-        gitParameter(
-            name: 'BRANCH_NAME',
-            type: 'PT_BRANCH',
-            branchFilter: '.*',
-            defaultValue: 'master',
-            description: 'Select the branch to build'
-        )
     }
   stages {
     stage('Cloning Repo') {
       steps {
-        script{
-        checkout([$class: 'GitSCM', branches: [[name: params.BRANCH_NAME]], userRemoteConfigs: [[url: 'https://github.com/rana-sahil-221/postgres-jenkins.git']]])
-      }
+          git branch:"${BRANCH_NAME}",url: 'https://github.com/rana-sahil-221/postgres-jenkins.git'
     }
     }
     stage('Deploying Manifests to the K8 Cluster') {
