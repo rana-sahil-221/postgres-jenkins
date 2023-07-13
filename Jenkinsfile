@@ -39,10 +39,13 @@ pipeline {
 
    stage('SonarQube Analysis') {
     steps {
-      withSonarQubeEnv('SonarCloud') {
+      script {
+        def sonarScannerPath = "/opt/sonar-scanner/bin"
+        withSonarQubeEnv('SonarCloud') {
         sh 'sonar-scanner -Dsonar.projectKey=rana-sahil-221_postgres-jenkins -Dsonar.organization=rana-sahil-221'
       }
     }
   }
+}
 }
 }
