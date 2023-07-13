@@ -4,8 +4,8 @@ pipeline {
   }
   agent any
   parameters {
-    gitParameter branchFilter: 'origin/(.*)', defaultValue: 'master', name: 'BRANCH_NAME', type: 'PT_BRANCH'
-  }
+  gitParameter branch: '', branchFilter: '.*', defaultValue: 'origin/master', name: 'BRANCH_NAME', quickFilterEnabled: false, selectedValue: 'NONE', sortMode: 'NONE', tagFilter: '*', type: 'GitParameterDefinition'
+}
   stages {
     stage('Cloning Repo') {
       steps {
