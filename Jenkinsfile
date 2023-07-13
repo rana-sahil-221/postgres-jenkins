@@ -39,7 +39,7 @@ pipeline {
 
    stage('SonarQube Analysis') {
     steps {
-      withSonarQubeEnv('mysonar') {
+      withSonarQubeEnv('SonarCloud') {
         sh 'sonar-scanner -Dsonar.projectKey=rana-sahil-221_postgres-jenkins -Dsonar.organization=rana-sahil-221'
       }
     }
