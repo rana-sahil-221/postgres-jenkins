@@ -6,7 +6,7 @@ pipeline {
   stages {
     stage('Cloning Repo') {
       steps {
-          git url: 'https://github.com/rana-sahil-221/postgres-jenkins.git'
+          git branch: 'main',url: 'https://github.com/rana-sahil-221/postgres-jenkins.git'
     }
     }
     stage('Deploying Manifests to the K8 Cluster') {
@@ -34,6 +34,13 @@ pipeline {
         script {
           archiveArtifacts artifacts: 'dbArtifact.sql'
         }
+      }
+    }
+
+   stage('SonarQube Analysis') {
+    steps {
+      withSonarQubeEnv('sonar_id') {
+        sh 'sonar-scanner'
       }
     }
   }
