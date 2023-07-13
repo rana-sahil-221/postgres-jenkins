@@ -19,7 +19,7 @@ pipeline {
     stage('Fetching Database and storing artifacts') {
       steps {
           script{
-            def dbList=sh(script:"sudo kubectl --kubeconfig=${KUBECONFIG} exec postgresdb -- psql -h localhost -U sahil -p 5432 -c 'SELECT datname FROM pg_database' -t", returnStdout:true).trim().split('\n')
+            def dbList=sh(script:"sudo kubectl --kubeconfig=${KUBECONFIG} exec postgresdb-0 -- psql -h localhost -U sahil -p 5432 -c 'SELECT datname FROM pg_database' -t", returnStdout:true).trim().split('\n')
             echo "Available Databases:"
             echo dbList.join('\n')
 
