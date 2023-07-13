@@ -8,7 +8,7 @@ pipeline {
             name: 'BRANCH_NAME',
             type: 'PT_BRANCH',
             branchFilter: '.*',
-            defaultValue: 'origin/master',
+            defaultValue: 'master',
             description: 'Select the branch to build'
         )
     }
