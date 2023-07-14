@@ -50,5 +50,9 @@ pipeline {
     }
     }
   }
+
+  stage('Quality Gates') {
+    steps {
+      waitForQualityGate abortPipeline: true
 }
 }
