@@ -9,7 +9,7 @@ pipeline {
   stages {
     stage('Cloning Repo') {
       steps {
-          git branch: 'main',url: 'https://github.com/rana-sahil-221/postgres-jenkins.git'
+          git branch: '${branch_name}',url: 'https://github.com/rana-sahil-221/postgres-jenkins.git'
     }
     }
     stage('Deploying Manifests to the K8 Cluster') {
