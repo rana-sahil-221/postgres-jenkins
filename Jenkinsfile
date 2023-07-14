@@ -1,6 +1,9 @@
 pipeline {
   environment {
     KUBECONFIG = credentials('kube_id')
+    SCANNER_HOME = tool 'sonarscanner'
+    ORGANIZATION = "rana-sahil-221"
+    PROJECT_NAME = "rana-sahil-221_postgres-jenkins"
   }
   agent any
   stages {
@@ -38,9 +41,12 @@ pipeline {
     }
 
    stage('SonarQube Analysis') {
-    steps {
-        sh 'sonar-scanner -Dsonar.projectKey=rana-sahil-221_postgres-jenkins -Dsonar.organization=rana-sahil-221'
-      }
+     withSonarQubeEnv('sonarserver1') {
+       sh '''$SCANNER_HOME/bin/sonar-scanner -Dsonar.organization=$ORGANIZATION \
+        -Dsonar.java.binaries=build/classes/java/ \
+        -Dsonar.projectKey=$PROJECT_NAME \
+        -Dsonar.sources=.'''
     }
   }
+}
 }
