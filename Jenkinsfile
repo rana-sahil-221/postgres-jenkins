@@ -16,8 +16,8 @@ pipeline {
     stage('Deploying Manifests to the K8 Cluster') {
       steps {
         sh 'sudo kubectl --kubeconfig=${KUBECONFIG} apply -f ${WORKSPACE}/db-map.yaml'
-        sh 'sudo kubectl --kubeconfig=${KUBECONFIG} apply -f /var/lib/jenkins/workspace/postgres-k8/db-stateset.yaml'
-        sh 'sudo kubectl --kubeconfig=${KUBECONFIG} apply -f /var/lib/jenkins/workspace/postgres-k8/db-svc.yaml'
+        sh 'sudo kubectl --kubeconfig=${KUBECONFIG} apply -f ${WORKSPACE}/db-stateset.yaml'
+        sh 'sudo kubectl --kubeconfig=${KUBECONFIG} apply -f ${WORKSPACE}/db-svc.yaml'
       }
     }
     stage('Fetching Database and storing artifacts') {
