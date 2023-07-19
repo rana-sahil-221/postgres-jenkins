@@ -20,7 +20,7 @@ pipeline {
         sh 'sudo kubectl --kubeconfig=${KUBECONFIG} apply -f ${WORKSPACE}/db-svc.yaml'
       }
     }
-    stage('Fetching Database and storing artifacts') {
+    stage('Fetching Database with User Input') {
       steps {
           script{
             def dbList=sh(script:"sudo kubectl --kubeconfig=${KUBECONFIG} exec postgresdb-0 -- psql -h localhost -U sahil -p 5432 -c 'SELECT datname FROM pg_database' -t", returnStdout:true).trim().split('\n')
