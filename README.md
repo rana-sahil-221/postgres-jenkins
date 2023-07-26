@@ -14,3 +14,7 @@ JENKINS PIPELINE
 ==> Stores the database as an artifact in jenkins workspace.
 
 ==> Integrate SonarQube with Jenkins pipeline for Code Analysis.
+
+==> Paramterized builds to dynamically select branches to build. 
+
+==> Supports Slack Notifications such as Sending Build details with color code for success and failure.
