@@ -64,7 +64,7 @@ pipeline {
   post {
   success {
       script {
-            def changes = changelog([format: "plaintext"])
+            def changes = gitChangelog options: [outputType: 'plain']
       slackSend(color: "good", message: "Deployment to K8 cluster done and artifact stored!",attachments: [[
         color: 'good',
         title: "BUILD DETAILS",
