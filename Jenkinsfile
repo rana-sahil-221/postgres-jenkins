@@ -87,6 +87,7 @@ pipeline {
   
   failure {
       slackSend color: "danger", message: "Deployment to K8 cluster failed!", attachments: [[
+        color: 'good',
         title: "BUILD DETAILS",
         fields: [[
           title: "User",
