@@ -59,7 +59,6 @@ pipeline {
 }
 }
   }
-  }
 
  post {
     success {
@@ -104,5 +103,6 @@ pipeline {
         ]]
       }
     }
+}
 }
 //jenkinsfile of branch-1
