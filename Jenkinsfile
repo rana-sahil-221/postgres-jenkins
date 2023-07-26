@@ -59,50 +59,51 @@ pipeline {
 }
 }
   }
+  }
 
- post {
-    success {
-        slackSend color: "good", message: "Deployment to K8 cluster done and artifact stored! - COMMIT CHANGES - ${env.GIT_COMMIT}", attachments: [[
-          title: "BUILD DETAILS",
-          fields: [[
-            title: "User",
-            value: "${env.BUILD_USER}",
-            short: true
-          ],
-          [
-            title: "BUILD NUMBER",
-            value: "${currentBuild.number}",
-            short: true
-          ],
-          [
-            title: "JOB URL",
-            value: "${env.JOB_URL}",
-            short: true
-          ]]
+  post {
+  success {
+      slackSend color: "good", message: "Deployment to K8 cluster done and artifact stored! - COMMIT CHANGES - ${env.GIT_COMMIT}", attachments: [[
+        title: "BUILD DETAILS",
+        fields: [[
+          title: "User",
+          value: "${env.BUILD_USER}",
+          short: true
+        ],
+        [
+          title: "BUILD NUMBER",
+          value: "${currentBuild.number}",
+          short: true
+        ],
+        [
+          title: "JOB URL",
+          value: "${env.JOB_URL}",
+          short: true
         ]]
-      }
-  
-    failure {
-        slackSend color: "danger", message: "Deployment to K8 cluster failed!", attachments: [[
-          title: "BUILD DETAILS",
-          fields: [[
-            title: "User",
-            value: "${env.BUILD_USER}",
-            short: true
-          ],
-          [
-            title: "BUILD NUMBER",
-            value: "${currentBuild.number}",
-            short: true
-          ],
-          [
-            title: "JOB URL",
-            value: "${env.JOB_URL}",
-            short: true
-          ]]
-        ]]
-      }
+      ]]
     }
-}
-}
+  
+  failure {
+      slackSend color: "danger", message: "Deployment to K8 cluster failed!", attachments: [[
+        title: "BUILD DETAILS",
+        fields: [[
+          title: "User",
+          value: "${env.BUILD_USER}",
+          short: true
+        ],
+        [
+          title: "BUILD NUMBER",
+          value: "${currentBuild.number}",
+          short: true
+        ],
+        [
+          title: "JOB URL",
+          value: "${env.JOB_URL}",
+          short: true
+        ]]
+      ]]
+    }
+  }
+  }
+  }
 //jenkinsfile of branch-1
