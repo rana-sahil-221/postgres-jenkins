@@ -63,7 +63,6 @@ pipeline {
 
  post {
     success {
-      script {
         slackSend color: '#36a64f', message: "Deployment to K8 cluster done and artifact stored! - COMMIT CHANGES - ${env.GIT_COMMIT}", attachments: [[
           title: "BUILD DETAILS",
           fields: [[
@@ -86,7 +85,6 @@ pipeline {
     }
   
     failure {
-      script {
         slackSend color: '#ff0000', message: "Deployment to K8 cluster failed!", attachments: [[
           title: "BUILD DETAILS",
           fields: [[
@@ -107,6 +105,4 @@ pipeline {
         ]]
       }
     }
-  }
-}
 //jenkinsfile of branch-1
