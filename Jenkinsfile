@@ -63,24 +63,7 @@ pipeline {
 
   post {
   success {
-      slackSend(color: "good", message: "Deployment to K8 cluster done and artifact stored! - COMMIT CHANGES - ${env.GIT_COMMIT}", attachments: [[
-        title: "BUILD DETAILS",
-        fields: [[
-          title: "User",
-          value: "${env.BUILD_USER}",
-          short: true
-        ],
-        [
-          title: "BUILD NUMBER",
-          value: "${currentBuild.number}",
-          short: true
-        ],
-        [
-          title: "JOB URL",
-          value: "${env.JOB_URL}",
-          short: true
-        ]]
-      ]]
+      slackSend(color: "good", message: "Deployment to K8 cluster done and artifact stored! - COMMIT CHANGES - ${env.GIT_COMMIT}"
       )
     }
   
