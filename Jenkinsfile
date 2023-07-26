@@ -64,13 +64,7 @@ pipeline {
   post {
   success {
       script {
-        def changelog = ""
-                for (changeSet in currentBuild.changeSets) {
-                    for (entry in changeSet) {
-                        changelog += "${entry.commitId}: ${entry.msg}\n"
-                    }
-                }
-        //def changelog = sh(script: "git log --oneline ${env.GIT_PREVIOUS_SUCCESSFUL_COMMIT}..${env.GIT_COMMIT}", returnStdout: true)
+        def changelog = sh(script: "git log --oneline ${env.GIT_PREVIOUS_SUCCESSFUL_COMMIT}..${env.GIT_COMMIT}", returnStdout: true)
        slackSend(color: "good", message: "Deployment to K8 cluster done and artifact stored!",attachments: [[
         color: 'good',
         title: "BUILD DETAILS",
@@ -86,7 +80,7 @@ pipeline {
         ],
         [
           title: "Changelog",
-          value: changelog.trim(),
+          value: changelog
           color: "good"
         ],
         [
