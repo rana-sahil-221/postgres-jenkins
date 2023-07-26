@@ -63,7 +63,7 @@ pipeline {
 
   post {
   success {
-      changeLog = gitChangelog branch: '${branch_name}', options: [outputType: 'plain']
+      def changeLog = gitChangelog branch: '${branch_name}', options: [outputType: 'plain']
       slackSend(color: "good", message: "Deployment to K8 cluster done and artifact stored!",attachments: [[
         color: 'good',
         title: "BUILD DETAILS",
