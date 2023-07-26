@@ -59,6 +59,15 @@ pipeline {
 }
 }
   }
+  }
+
+post {
+  success {
+      slackSend color: '#36a64f', message: "Deployment to K8 cluster done and artifact stored!"
+    }
+  failure {
+      slackSend color: '#ff0000', message: "Deployment to K8 cluster failed!"
+    }
 }
 }
 //jenkinsfile of branch-1
