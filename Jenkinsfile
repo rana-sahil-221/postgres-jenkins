@@ -64,11 +64,9 @@ pipeline {
 post {
   success {
       slackSend color: '#36a64f', message: "Deployment to K8 cluster done and artifact stored! - COMMIT CHANGES - ${env.GIT_COMMIT}"
-      attachments: [
-        [
+      attachments: [[
           title: "BUILD DETAILS",
-          fields: [
-               [
+          fields: [[
                  title: "User",
                  value: "${env.USER}",
                  short: true
@@ -82,19 +80,15 @@ post {
                  title: "JOB URL",
                  value: "${env.BUILD_URL}",
                  short: true
-               ]
-            ]
-          ]
-    ]
+               ]]
+          ]]
   }
   
   failure {
        slackSend color: '#ff0000', message: "Deployment to K8 cluster failed!"
-       attachments: [
-        [
+       attachments: [[
           title: "BUILD DETAILS",
-          fields: [
-               [
+          fields: [[
                  title: "User",
                  value: "${env.USER}",
                  short: true
@@ -108,10 +102,8 @@ post {
                  title: "JOB URL",
                  value: "${env.BUILD_URL}",
                  short: true
-               ]
-            ]
-          ]
-    ]
+               ]]
+          ]]
   }
 }
 }
