@@ -105,5 +105,4 @@ pipeline {
     }
   }
   }
-  }
 //jenkinsfile of branch-1
