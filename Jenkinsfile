@@ -77,7 +77,7 @@ pipeline {
           ],
           [
             title: "JOB URL",
-            value: "${env.BUILD_URL}",
+            value: "${env.JOB_URL}",
             short: true
           ]]
         ]]
@@ -99,7 +99,7 @@ pipeline {
           ],
           [
             title: "JOB URL",
-            value: "${env.BUILD_URL}",
+            value: "${env.JOB_URL}",
             short: true
           ]]
         ]]
