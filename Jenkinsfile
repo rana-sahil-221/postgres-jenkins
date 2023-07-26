@@ -80,7 +80,7 @@ pipeline {
         ],
         [
           title: "Changelog",
-          value: changelog
+          value: changelog,
           color: "good"
         ],
         [
