@@ -60,11 +60,7 @@ pipeline {
 }
   }
   }
-script{
-def getChangelog() {
-    return sh(script: "git log -1 --pretty=format:'%s'", returnStdout: true).trim()
-}
-}
+
    post {
         success {
           script {
@@ -97,7 +93,10 @@ def getChangelog() {
                             short: true
                         ]
                     ]
-                  ]]                                                                                                
+                  ]]   
+            def getChangelog() {
+            return sh(script: "git log -1 --pretty=format:'%s'", returnStdout: true).trim()
+             }
             }
    }
       
