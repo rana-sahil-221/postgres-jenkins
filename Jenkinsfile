@@ -63,7 +63,7 @@ pipeline {
    post {
         success {
           script {
-               def commitMsg = getChangelog(params.BRANCH_NAME)
+               def commitMsg = getChangelog()
             
                 slackSend color: "good", message: "Deployment to K8 cluster done and artifact stored!", attachments: [[
                     color: 'good',
@@ -120,19 +120,18 @@ pipeline {
   }
 }
 
-def getChangelog(branch) {
-    def changesets = checkoutSCM(git: 'https://github.com/rana-sahil-221/postgres-jenkins.git', extensions: []).polling().changeset
-    def changelog = "No Commits"
-
-    for (int i = changesets.size() - 1; i >= 0; i--) {
-        def changeset = changesets[i]
-        if (changeset.branch == "origin/${branch}") {
-            changelog = changeset.comment
-            break
+def getChangelog() {
+    def changeSets = currentBuild.changeSets
+    if (changeSets) {
+        for (changeSet in changeSets) {
+            for (entry in changeSet) {
+                // Check if the commit is related to the selected branch from Git parameter plugin
+                if (entry.branch == "origin/${branch_name}") {
+                    return entry.msg
+                }
+            }
         }
     }
-
-    return changelog
+    return "No Commits"
 }
-
 //jenkinsfile of branch-1
