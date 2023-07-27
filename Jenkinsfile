@@ -63,7 +63,7 @@ pipeline {
    post {
         success {
           script {
-               def commitMsg = getChangelog()
+               def changelog = getChangelog(params.branch_name)
             
                 slackSend color: "good", message: "Deployment to K8 cluster done and artifact stored!", attachments: [[
                     color: 'good',
@@ -119,17 +119,19 @@ pipeline {
   }
   }
 }
-pipeline {
-  // ... (rest of the pipeline remains the same)
-}
 
-def getChangelog() {
-  def changeSet = currentBuild.changeSets
-  if (changeSet != null && changeSet.size() > 0) {
-    return changeSet[0].items[0].msg
-  } else {
-    return "No Commits"
-  }
+def getChangelog(branch) {
+    def changesets = currentBuild.changeSets
+    def changelog = "No Commits"
+
+    for (changeset in changesets) {
+        if (changeset.branch == "origin/${branch_name}") {
+            changelog = changeset.items[0].msg
+            break
+        }
+    }
+
+    return changelog
 }
 
 //jenkinsfile of branch-1
