@@ -100,7 +100,7 @@ pipeline {
       }
   
   failure {
-      slackSend color: "danger", message: "Deployment to K8 cluster failed!", attachments: [[
+      slackSend (color: "danger", message: "Deployment to K8 cluster failed!", attachments: [[
         color: 'danger',
         title: "BUILD DETAILS",
         fields: [[
@@ -119,7 +119,8 @@ pipeline {
           short: true
         ]]
       ]]
-    }
+    )
   }
+}
 }
 //jenkinsfile of branch-1
