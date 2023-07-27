@@ -60,15 +60,16 @@ pipeline {
 }
   }
   }
-
+def getChangelog() {
+    return sh(script: "git log -1 --pretty=format:'%s'", returnStdout: true).trim()
+}
    post {
         success {
           script {
-                def changeSet = currentBuild.changeSets
-                def commitMsg = "No Commits"
-
-                if (changeSet != null && changeSet.size() > 0) {
-                    commitMsg = changeSet[0].items[0].msg
+                def changelog = getChangelog()
+                if (changelog.isEmpty()) {
+                    changelog = "No Commits"
+                }
                 }
                 slackSend color: "good", message: "Deployment to K8 cluster done and artifact stored!", attachments: [[
                     color: 'good',
@@ -86,7 +87,7 @@ pipeline {
                         ],
                         [
                             title: "Changelog",
-                            value: commitMsg,
+                            value: changelog,
                             color: "good"
                         ],
                         [
@@ -100,7 +101,6 @@ pipeline {
         }
       
   failure {
-    script {
       slackSend (color: "danger", message: "Deployment to K8 cluster failed!", attachments: [[
         color: 'danger',
         title: "BUILD DETAILS",
@@ -123,6 +123,5 @@ pipeline {
     )
   }
   }
-   }
 }
 //jenkinsfile of branch-1
