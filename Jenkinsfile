@@ -63,7 +63,7 @@ pipeline {
 
   post {
   success {
-      script {
+      script{
         //def changelog = sh(script: "git log --pretty=format:\"%s\"", returnStdout: true).trim()
         def changeSet = currentBuild.changeSets
         def commitMsg = "No Commits"
@@ -96,7 +96,7 @@ pipeline {
         ]]
       ]]
       )
-    }
+      }
   }
   
   failure {
