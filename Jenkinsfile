@@ -63,11 +63,8 @@ pipeline {
    post {
         success {
           script {
+               def changelog = getChangelog()
             
-                def changelog = getChangelog()
-                if (changelog.isEmpty()) {
-                    changelog = "No Commits"
-                }
                 slackSend color: "good", message: "Deployment to K8 cluster done and artifact stored!", attachments: [[
                     color: 'good',
                     title: "BUILD DETAILS",
@@ -123,6 +120,7 @@ pipeline {
   }
 }
 def getChangelog() {
-      return sh(script: "git log -1 --pretty=format:'%s'", returnStdout: true).trim()
-      }
+  def changelog = sh(script: "git log -1 --pretty=format:'%s'", returnStdout: true).trim()
+  return changelog ?: "No Commits"
+}
 //jenkinsfile of branch-1
