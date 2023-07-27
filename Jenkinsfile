@@ -69,7 +69,7 @@ pipeline {
         def commitMsg = "No Commits"
 
         if (changeSet != null && changeSet.size() > 0) {
-          commitMsg = changeSet[0].items[0].msg
+          commitMsg = changeSet[0].collect { it.msg }.join("\n")
         }
        slackSend(color: "good", message: "Deployment to K8 cluster done and artifact stored!",attachments: [[
         color: 'good',
