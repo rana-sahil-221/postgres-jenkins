@@ -60,13 +60,15 @@ pipeline {
 }
   }
   }
-
+method {
+     def getChangelog() {
+      return sh(script: "git log -1 --pretty=format:'%s'", returnStdout: true).trim()
+      }
+}
    post {
         success {
           script {
-            def getChangelog() {
-            return sh(script: "git log -1 --pretty=format:'%s'", returnStdout: true).trim()
-            }
+            
                 def changelog = getChangelog()
                 if (changelog.isEmpty()) {
                     changelog = "No Commits"
