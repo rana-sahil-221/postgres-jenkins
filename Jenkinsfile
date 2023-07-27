@@ -64,6 +64,9 @@ pipeline {
    post {
         success {
           script {
+            def getChangelog() {
+            return sh(script: "git log -1 --pretty=format:'%s'", returnStdout: true).trim()
+            }
                 def changelog = getChangelog()
                 if (changelog.isEmpty()) {
                     changelog = "No Commits"
@@ -94,11 +97,9 @@ pipeline {
                         ]
                     ]
                   ]]   
-            def getChangelog() {
-            return sh(script: "git log -1 --pretty=format:'%s'", returnStdout: true).trim()
+            
              }
             }
-   }
       
   failure {
       slackSend (color: "danger", message: "Deployment to K8 cluster failed!", attachments: [[
