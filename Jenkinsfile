@@ -63,7 +63,6 @@ pipeline {
 
    post {
         success {
-            script {
                 def changeSet = currentBuild.changeSets
                 def commitMsg = "No Commits"
 
@@ -97,7 +96,6 @@ pipeline {
                     ]
                   ]]                                                                                                
             }
-        }
       
   failure {
       slackSend (color: "danger", message: "Deployment to K8 cluster failed!", attachments: [[
