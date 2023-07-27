@@ -66,10 +66,10 @@ pipeline {
       script {
         //def changelog = sh(script: "git log --pretty=format:\"%s\"", returnStdout: true).trim()
         def changeSet = currentBuild.changeSets
-        def msg = "No Commits"
+        def commitMsg = "No Commits"
 
         if (changeSet != null && changeSet.size() > 0) {
-          msg = changeSet[0].items[0]
+          commitMsg = changeSet[0].items[0].msg
         }
        slackSend(color: "good", message: "Deployment to K8 cluster done and artifact stored!",attachments: [[
         color: 'good',
@@ -86,7 +86,7 @@ pipeline {
         ],
         [
           title: "Changelog",
-          value: msg,
+          value: commitMsg,
           color: "good"
         ],
         [
