@@ -45,5 +45,5 @@ spec:
         storageClassName: standard
         resources:
           requests:
-            storage: 800Mi
+            storage: 700Mi
 # stateset from branch-1
