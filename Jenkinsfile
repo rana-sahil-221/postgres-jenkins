@@ -63,7 +63,7 @@ pipeline {
    post {
         success {
           script {
-               def changelog = getChangelog()
+               def commitMsg = getChangelog()
             
                 slackSend color: "good", message: "Deployment to K8 cluster done and artifact stored!", attachments: [[
                     color: 'good',
@@ -81,7 +81,7 @@ pipeline {
                         ],
                         [
                             title: "Changelog",
-                            value: changelog,
+                            value: commitMsg,
                             color: "good"
                         ],
                         [
@@ -119,8 +119,17 @@ pipeline {
   }
   }
 }
-def getChangelog() {
-  def changelog = sh(script: "git log -1 --pretty=format:'%s'", returnStdout: true).trim()
-  return changelog ?: "No Commits"
+pipeline {
+  // ... (rest of the pipeline remains the same)
 }
+
+def getChangelog() {
+  def changeSet = currentBuild.changeSets
+  if (changeSet != null && changeSet.size() > 0) {
+    return changeSet[0].items[0].msg
+  } else {
+    return "No Commits"
+  }
+}
+
 //jenkinsfile of branch-1
