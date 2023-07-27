@@ -86,7 +86,7 @@ pipeline {
         ],
         [
           title: "Changelog",
-          value: commitMsg,
+          value: $commitMsg,
           color: "good"
         ],
         [
