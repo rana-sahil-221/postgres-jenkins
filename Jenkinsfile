@@ -70,7 +70,6 @@ def getChangelog() {
                 if (changelog.isEmpty()) {
                     changelog = "No Commits"
                 }
-                }
                 slackSend color: "good", message: "Deployment to K8 cluster done and artifact stored!", attachments: [[
                     color: 'good',
                     title: "BUILD DETAILS",
@@ -98,7 +97,7 @@ def getChangelog() {
                     ]
                   ]]                                                                                                
             }
-        }
+   }
       
   failure {
       slackSend (color: "danger", message: "Deployment to K8 cluster failed!", attachments: [[
