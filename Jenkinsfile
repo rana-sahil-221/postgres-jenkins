@@ -70,7 +70,6 @@ pipeline {
                 if (changeSet != null && changeSet.size() > 0) {
                     commitMsg = changeSet[0].items[0].msg
                 }
-          }
                 slackSend color: "good", message: "Deployment to K8 cluster done and artifact stored!", attachments: [[
                     color: 'good',
                     title: "BUILD DETAILS",
@@ -98,8 +97,10 @@ pipeline {
                     ]
                   ]]                                                                                                
             }
+        }
       
   failure {
+    script {
       slackSend (color: "danger", message: "Deployment to K8 cluster failed!", attachments: [[
         color: 'danger',
         title: "BUILD DETAILS",
@@ -122,5 +123,6 @@ pipeline {
     )
   }
   }
+   }
 }
 //jenkinsfile of branch-1
