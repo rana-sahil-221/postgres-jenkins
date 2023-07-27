@@ -86,7 +86,7 @@ pipeline {
         ],
         [
           title: "Changelog",
-          value: "${msg}",
+          value: msg,
           color: "good"
         ],
         [
