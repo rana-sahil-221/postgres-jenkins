@@ -128,7 +128,6 @@ def getChangelog() {
         branches: [[name: "${params.branch_name}"]],
         extensions: [],
         userRemoteConfigs: [[credentialsId: '9624a2a7-70af-4b64-9eca-892f819707cb', url: 'https://github.com/rana-sahil-221/postgres-jenkins.git']],
-        poll: true
     )
 
     // Fetch the commit message for the latest commit on the selected branch
