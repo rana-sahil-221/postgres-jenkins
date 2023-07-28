@@ -2,7 +2,7 @@
 Readme of Main
 JENKINS PIPELINE 
 
-
+Sample test
 ==> Initialises Postgres databases inside the statefulset pod.
 
 ==> List the Branches available on github during runtime and ask for user choice to build on.
