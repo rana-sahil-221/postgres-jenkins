@@ -121,7 +121,7 @@ pipeline {
 }
 
 def getChangelog() {
-    def branch = "origin/${params.branch_name}"
+    def branch = "${params.branch_name}"
 
     // Fetch the commit message for the latest commit on the selected branch
     def changelog = sh(
