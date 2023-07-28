@@ -120,13 +120,13 @@ pipeline {
   }
 }
 
-def getChangelog() {
+ddef getChangelog() {
     def changeSets = currentBuild.changeSets
     if (changeSets) {
+        def branch = "origin/${params.branch_name}"
         for (changeSet in changeSets) {
             for (entry in changeSet) {
-                // Check if the commit is related to the selected branch from Git parameter plugin
-                if (entry.branch == "origin/${env.BRANCH_NAME}") {
+                if (entry.branch == branch) {
                     return entry.msg
                 }
             }
