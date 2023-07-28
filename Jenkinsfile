@@ -120,7 +120,7 @@ pipeline {
   }
 }
 
-ddef getChangelog() {
+def getChangelog() {
     def changeSets = currentBuild.changeSets
     if (changeSets) {
         def branch = "origin/${params.branch_name}"
