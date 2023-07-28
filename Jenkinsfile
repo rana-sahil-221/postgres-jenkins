@@ -121,26 +121,28 @@ pipeline {
 }
 
 def getChangelog() {
-    def branch = "origin/${branch_name}"
-    
-    // Get the changesets for the selected branch
-    def changeSets = currentBuild.changeSets
-    if (changeSets) {
-        for (changeSet in changeSets) {
-            for (entry in changeSet) {
-                // Check if the commit is related to the selected branch from Git parameter plugin
-                if (entry.branch == branch) {
-                    // Fetch the commit message for the latest commit on the selected branch
-                    def changelog = entry.msg.trim()
-                    if (changelog) {
-                        return changelog
-                    }
-                }
-            }
-        }
-    }
+    def branch = "origin/${params.branch_name}"
 
-    return "No Commits"
+    // Perform a fresh checkout to ensure latest code from the selected branch
+    checkout scmGit(
+        branches: [[name: "${params.branch_name}"]],
+        extensions: [],
+        userRemoteConfigs: [[credentialsId: '9624a2a7-70af-4b64-9eca-892f819707cb', url: 'https://github.com/rana-sahil-221/postgres-jenkins.git']],
+        poll: true
+    )
+
+    // Fetch the commit message for the latest commit on the selected branch
+    def changelog = sh(
+        script: "git log -1 --pretty=format:'%s' ${branch}",
+        returnStdout: true
+    ).trim()
+
+    if (changelog) {
+        return changelog
+    } else {
+        return "No Commits"
+    }
 }
+
 //jenkinsfile of branch-1
 // sample comment
