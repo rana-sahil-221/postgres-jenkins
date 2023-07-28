@@ -126,7 +126,7 @@ def getChangelog() {
         for (changeSet in changeSets) {
             for (entry in changeSet) {
                 // Check if the commit is related to the selected branch from Git parameter plugin
-                if (entry.branch == "origin/${branch_name}") {
+                if (entry.branch == "${branch_name}") {
                     return entry.msg
                 }
             }
