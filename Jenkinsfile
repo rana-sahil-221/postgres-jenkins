@@ -68,7 +68,7 @@ pipeline {
    success {
       script {
          def branchName = "${params.branch_name}"
-                def commitMessage = getLatestCommitMessage(branchName)
+                def commitMsg = getLatestCommitMessage(branchName)
 
             slackSend color: "good", message: "Deployment to K8 cluster done and artifact stored!", attachments: [[
               color: 'good',
