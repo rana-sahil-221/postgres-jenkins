@@ -64,6 +64,7 @@ pipeline {
   post {
     success {
       script {
+        node {
         def changeSet = currentBuild.changeSets
         def commitMsg = "No Commits" // Default message if no commits are found
 
@@ -125,6 +126,7 @@ pipeline {
         }
       }
     }
+  }
 
       
   failure {
