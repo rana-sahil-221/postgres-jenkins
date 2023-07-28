@@ -67,8 +67,8 @@ pipeline {
     
    success {
       script {
-         def branchName = "${params.branch_name}"
-                def commitMsg = getLatestCommitMessage(branchName)
+         def branchName = "${params.branch_name}" ?: "master"
+                def commitMessage = getLatestCommitMessage(branchName)
 
             slackSend color: "good", message: "Deployment to K8 cluster done and artifact stored!", attachments: [[
               color: 'good',
@@ -129,10 +129,12 @@ pipeline {
 
 def getLatestCommitMessage(String branch) {
     def commitMessage = ""
-    def git = checkout([$class: 'GitSCM', branches: [[name: '${branch_name}']], userRemoteConfigs: [[url: 'https://github.com/rana-sahil-221/postgres-jenkins.git']]])
+    def gitCommand = "git log -1 --pretty=%B"
+    def proc = "${gitCommand}".execute(null, new File(env.WORKSPACE))
+    proc.waitFor()
 
-    if (git != null && git.lastBuild != null && git.lastBuild.revision != null) {
-        commitMessage = git.lastBuild.revision.message
+    if (proc.exitValue() == 0) {
+        commitMessage = proc.text.trim()
     }
 
     return commitMessage ?: "No Commits"
