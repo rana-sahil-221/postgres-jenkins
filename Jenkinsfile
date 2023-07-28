@@ -123,13 +123,6 @@ pipeline {
 def getChangelog() {
     def branch = "origin/${params.branch_name}"
 
-    // Perform a fresh checkout to ensure latest code from the selected branch
-    checkout scmGit(
-        branches: [[name: "${params.branch_name}"]],
-        extensions: [],
-        userRemoteConfigs: [[credentialsId: '9624a2a7-70af-4b64-9eca-892f819707cb', url: 'https://github.com/rana-sahil-221/postgres-jenkins.git']],
-    )
-
     // Fetch the commit message for the latest commit on the selected branch
     def changelog = sh(
         script: "git log -1 --pretty=format:'%s' ${branch}",
