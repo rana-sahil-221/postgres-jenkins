@@ -60,84 +60,74 @@ pipeline {
 }
   }
   }
-
-  
-    
-  post {
-    
-   success {
-      script {
-         def branchName = "${params.branch_name}" ?: "master"
-                def commitMessage = getLatestCommitMessage(branchName)
-
-            slackSend color: "good", message: "Deployment to K8 cluster done and artifact stored!", attachments: [[
-              color: 'good',
-              title: "BUILD DETAILS",
-              fields: [
-                [
-                  title: "User",
-                  value: "${env.BUILD_USER}",
-                  short: true
-                ],
-                [
-                  title: "BUILD NUMBER",
-                  value: "${currentBuild.number}",
-                  short: true
-                ],
-                [
-                  title: "Changelog",
-                  value: commitMsg,
-                  color: "good"
-                ],
-                [
-                  title: "JOB URL",
-                  value: "${env.JOB_URL}",
-                  short: true
-                ]
-              ]
-            ]]
-          }
-        }
-
-    failure {
-      script {
-            slackSend color: "danger", message: "Deployment to K8 cluster failed!", attachments: [[
-              color: 'danger',
-              title: "BUILD DETAILS",
-              fields: [
-                [
-                  title: "User",
-                  value: "${env.BUILD_USER}",
-                  short: true
-                ],
-                [
-                  title: "BUILD NUMBER",
-                  value: "${currentBuild.number}",
-                  short: true
-                ],
-                [
-                  title: "JOB URL",
-                  value: "${env.JOB_URL}",
-                  short: true
-                ]
-              ]
-            ]]
-          }
-        }
-      }
+   post {
+        success {
+          script {
+               def commitMsg = getChangelog()
+            
+                slackSend color: "good", message: "Deployment to K8 cluster done and artifact stored!", attachments: [[
+                    color: 'good',
+                    title: "BUILD DETAILS",
+                    fields: [
+                        [
+                            title: "User",
+                            value: "${env.BUILD_USER}",
+                            short: true
+                        ],
+                        [
+                            title: "BUILD NUMBER",
+                            value: "${currentBuild.number}",
+                            short: true
+                        ],
+                        [
+                            title: "Changelog",
+                            value: commitMsg,
+                            color: "good"
+                        ],
+                        [
+                            title: "JOB URL",
+                            value: "${env.JOB_URL}",
+                            short: true
+                        ]
+                    ]
+                  ]]   
+            
+             }
+            }
+      
+  failure {
+      slackSend (color: "danger", message: "Deployment to K8 cluster failed!", attachments: [[
+        color: 'danger',
+        title: "BUILD DETAILS",
+        fields: [[
+          title: "User",
+          value: "${env.BUILD_USER}",
+          short: true
+        ],
+        [
+          title: "BUILD NUMBER",
+          value: "${currentBuild.number}",
+          short: true
+        ],
+        [
+          title: "JOB URL",
+          value: "${env.JOB_URL}",
+          short: true
+        ]]
+      ]]
+    )
+  }
+  }
 }
 
-def getLatestCommitMessage(String branch) {
-    def scmVars = checkout scm
-    def commitMessage = ""
 
-    scmVars.GIT_BRANCH.each {
-        if (it.name.endsWith("/${branch}")) {
-            commitMessage = it.revision.message
-        }
-    }
-
-    return commitMessage ?: "No Commits"
+def getChangelog() {
+  def changeSet = currentBuild.changeSets
+  if (changeSet != null && changeSet.size() > 0) {
+    return changeSet[0].items[0].msg
+  } else {
+    return "No Commits"
+  }
 }
+
 //jenkinsfile of branch-1
-// sample comment
