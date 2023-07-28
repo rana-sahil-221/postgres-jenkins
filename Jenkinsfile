@@ -121,23 +121,22 @@ pipeline {
 }
 
 def getChangelog() {
-    def branch = "origin/${params.branch_name}"
-
-    // Fetch the latest commit hash from the selected branch
-    def latestCommitHash = sh(
-        script: "git rev-parse ${branch}",
-        returnStdout: true
-    ).trim()
-
-    if (latestCommitHash) {
-        // Fetch the commit message for the latest commit
-        def changelog = sh(
-            script: "git log -1 --pretty=format:'%s' ${latestCommitHash}",
-            returnStdout: true
-        ).trim()
-
-        if (changelog) {
-            return changelog
+    def branch = "${params.branch_name}"
+    
+    // Get the changesets for the selected branch
+    def changeSets = currentBuild.changeSets
+    if (changeSets) {
+        for (changeSet in changeSets) {
+            for (entry in changeSet) {
+                // Check if the commit is related to the selected branch from Git parameter plugin
+                if (entry.branch == branch) {
+                    // Fetch the commit message for the latest commit on the selected branch
+                    def changelog = entry.msg.trim()
+                    if (changelog) {
+                        return changelog
+                    }
+                }
+            }
         }
     }
 
