@@ -1,4 +1,5 @@
 pipeline {
+   boolean buildSuccessful = false
   environment {
     KUBECONFIG = credentials('kube_id')
     SCANNER_HOME = tool 'sonarscanner'
@@ -61,96 +62,88 @@ pipeline {
   }
   }
 
+  
+    
   post {
-    success {
+    always {
+      buildSuccessful = currentBuild.result == 'SUCCESS'
+    }
+    
+   success {
       script {
         node {
-        def changeSet = currentBuild.changeSets
-        def commitMsg = "No Commits" // Default message if no commits are found
+          def commitMsg = getChangelog()
 
-        if (changeSet != null && changeSet.size() > 0) {
-          // Fetch the latest commit message
-          commitMsg = changeSet[0].items[0].msg
+          if (buildSuccessful) {
+            slackSend color: "good", message: "Deployment to K8 cluster done and artifact stored!", attachments: [[
+              color: 'good',
+              title: "BUILD DETAILS",
+              fields: [
+                [
+                  title: "User",
+                  value: "${env.BUILD_USER}",
+                  short: true
+                ],
+                [
+                  title: "BUILD NUMBER",
+                  value: "${currentBuild.number}",
+                  short: true
+                ],
+                [
+                  title: "Changelog",
+                  value: commitMsg,
+                  color: "good"
+                ],
+                [
+                  title: "JOB URL",
+                  value: "${env.JOB_URL}",
+                  short: true
+                ]
+              ]
+            ]]
+          }
         }
+      }
+    }
 
-        if (commitMsg != "No Commits") {
-          slackSend color: "good", message: "Deployment to K8 cluster done and artifact stored!", attachments: [[
-            color: 'good',
-            title: "BUILD DETAILS",
-            fields: [
-              [
-                title: "User",
-                value: "${env.BUILD_USER}",
-                short: true
-              ],
-              [
-                title: "BUILD NUMBER",
-                value: "${currentBuild.number}",
-                short: true
-              ],
-              [
-                title: "Changelog",
-                value: commitMsg,
-                color: "good"
-              ],
-              [
-                title: "JOB URL",
-                value: "${env.JOB_URL}",
-                short: true
+    failure {
+      script {
+        node {
+          if (!buildSuccessful) {
+            slackSend color: "danger", message: "Deployment to K8 cluster failed!", attachments: [[
+              color: 'danger',
+              title: "BUILD DETAILS",
+              fields: [
+                [
+                  title: "User",
+                  value: "${env.BUILD_USER}",
+                  short: true
+                ],
+                [
+                  title: "BUILD NUMBER",
+                  value: "${currentBuild.number}",
+                  short: true
+                ],
+                [
+                  title: "JOB URL",
+                  value: "${env.JOB_URL}",
+                  short: true
+                ]
               ]
-            ]
-          ]]
-        } else {
-          // Send a message stating that there were no commits
-          slackSend color: "good", message: "Deployment to K8 cluster done and artifact stored! No commits in this build.", attachments: [[
-            color: 'good',
-            title: "BUILD DETAILS",
-            fields: [
-              [
-                title: "User",
-                value: "${env.BUILD_USER}",
-                short: true
-              ],
-              [
-                title: "BUILD NUMBER",
-                value: "${currentBuild.number}",
-                short: true
-              ],
-              [
-                title: "JOB URL",
-                value: "${env.JOB_URL}",
-                short: true
-              ]
-            ]
-          ]]
+            ]]
+          }
         }
       }
     }
   }
+}
 
-      
-  failure {
-      slackSend (color: "danger", message: "Deployment to K8 cluster failed!", attachments: [[
-        color: 'danger',
-        title: "BUILD DETAILS",
-        fields: [[
-          title: "User",
-          value: "${env.BUILD_USER}",
-          short: true
-        ],
-        [
-          title: "BUILD NUMBER",
-          value: "${currentBuild.number}",
-          short: true
-        ],
-        [
-          title: "JOB URL",
-          value: "${env.JOB_URL}",
-          short: true
-        ]]
-      ]]
-    )
-  }
+def getChangelog() {
+  def changeSet = currentBuild.changeSets
+  if (changeSet != null && changeSet.size() > 0) {
+    return changeSet[0].items[0].msg
+  } else {
+    return "No Commits"
   }
 }
 //jenkinsfile of branch-1
