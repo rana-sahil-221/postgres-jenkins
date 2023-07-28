@@ -121,7 +121,7 @@ pipeline {
 }
 
 def getChangelog() {
-    def branch = "${branch_name}"
+    def branch = "origin/${branch_name}"
     
     // Get the changesets for the selected branch
     def changeSets = currentBuild.changeSets
