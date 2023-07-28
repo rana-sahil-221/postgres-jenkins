@@ -1,5 +1,4 @@
 pipeline {
-   boolean buildSuccessful = false
   environment {
     KUBECONFIG = credentials('kube_id')
     SCANNER_HOME = tool 'sonarscanner'
@@ -65,16 +64,11 @@ pipeline {
   
     
   post {
-    always {
-      buildSuccessful = currentBuild.result == 'SUCCESS'
-    }
     
    success {
       script {
-        node {
-          def commitMsg = getChangelog()
+         def commitMsg = env.CHANGE_LOG ?: "No Commits"
 
-          if (buildSuccessful) {
             slackSend color: "good", message: "Deployment to K8 cluster done and artifact stored!", attachments: [[
               color: 'good',
               title: "BUILD DETAILS",
@@ -103,13 +97,9 @@ pipeline {
             ]]
           }
         }
-      }
-    }
 
     failure {
       script {
-        node {
-          if (!buildSuccessful) {
             slackSend color: "danger", message: "Deployment to K8 cluster failed!", attachments: [[
               color: 'danger',
               title: "BUILD DETAILS",
@@ -135,16 +125,5 @@ pipeline {
         }
       }
     }
-  }
-}
-
-def getChangelog() {
-  def changeSet = currentBuild.changeSets
-  if (changeSet != null && changeSet.size() > 0) {
-    return changeSet[0].items[0].msg
-  } else {
-    return "No Commits"
-  }
-}
 //jenkinsfile of branch-1
 // sample comment
