@@ -123,18 +123,24 @@ pipeline {
 def getChangelog() {
     def branch = "${params.branch_name}"
 
-    // Fetch the commit message for the latest commit on the selected branch
-    def changelog = sh(
-        script: "git log -1 --pretty=format:'%s' ${branch}",
-        returnStdout: true
-    ).trim()
+    def hasChanges = sh(
+        script: "git rev-parse --quiet --verify ${branch}",
+        returnStatus: true
+    ) == 0
 
-    if (changelog) {
-        return changelog
-    } else {
-        return "No Commits"
+     if (hasChanges) {
+        // Fetch the commit message for the latest commit on the selected branch
+        def changelog = sh(
+            script: "git log -1 --pretty=format:'%s' ${branch}",
+            returnStdout: true
+        ).trim()
+
+        if (changelog) {
+            return changelog
+        }
     }
-}
 
+    return "No Commits"
+}
 //jenkinsfile of branch-1
 // sample comment
