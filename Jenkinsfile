@@ -121,17 +121,16 @@ pipeline {
 }
 
 def getChangelog() {
-    def changeSets = currentBuild.changeSets
-    if (changeSets) {
-        def branch = "origin/${params.branch_name}"
-        for (changeSet in changeSets) {
-            for (entry in changeSet) {
-                if (entry.branch == branch) {
-                    return entry.msg
-                }
-            }
-        }
+    def branch = "origin/${params.branch_name}"
+    def changelog = sh(
+        script: "git log -1 --pretty=format:'%s' ${branch}",
+        returnStdout: true
+    ).trim()
+
+    if (changelog) {
+        return changelog
+    } else {
+        return "No Commits"
     }
-    return "No Commits"
 }
 //jenkinsfile of branch-1
