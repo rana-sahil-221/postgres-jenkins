@@ -67,7 +67,8 @@ pipeline {
     
    success {
       script {
-         def commitMsg = env.CHANGE_LOG ?: "No Commits"
+         def branchName = "${params.branch_name}"
+                def commitMessage = getLatestCommitMessage(branchName)
 
             slackSend color: "good", message: "Deployment to K8 cluster done and artifact stored!", attachments: [[
               color: 'good',
@@ -124,6 +125,17 @@ pipeline {
           }
         }
       }
+}
+
+def getLatestCommitMessage(String branch) {
+    def commitMessage = ""
+    def git = checkout([$class: 'GitSCM', branches: [[name: '${branch_name}']], userRemoteConfigs: [[url: 'https://github.com/rana-sahil-221/postgres-jenkins.git']]])
+
+    if (git != null && git.lastBuild != null && git.lastBuild.revision != null) {
+        commitMessage = git.lastBuild.revision.message
     }
+
+    return commitMessage ?: "No Commits"
+}
 //jenkinsfile of branch-1
 // sample comment
