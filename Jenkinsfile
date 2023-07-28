@@ -138,9 +138,11 @@ def getChangelog() {
         if (changelog) {
             return changelog
         }
+        else {
+          return "No Commits"
+        }
     }
 
-    return "No Commits"
 }
 //jenkinsfile of branch-1
 // sample comment
