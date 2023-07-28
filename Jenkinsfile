@@ -60,40 +60,72 @@ pipeline {
 }
   }
   }
-   post {
-        success {
-          script {
-               def commitMsg = getChangelog()
-            
-                slackSend color: "good", message: "Deployment to K8 cluster done and artifact stored!", attachments: [[
-                    color: 'good',
-                    title: "BUILD DETAILS",
-                    fields: [
-                        [
-                            title: "User",
-                            value: "${env.BUILD_USER}",
-                            short: true
-                        ],
-                        [
-                            title: "BUILD NUMBER",
-                            value: "${currentBuild.number}",
-                            short: true
-                        ],
-                        [
-                            title: "Changelog",
-                            value: commitMsg,
-                            color: "good"
-                        ],
-                        [
-                            title: "JOB URL",
-                            value: "${env.JOB_URL}",
-                            short: true
-                        ]
-                    ]
-                  ]]   
-            
-             }
-            }
+
+  post {
+    success {
+      script {
+        def changeSet = currentBuild.changeSets
+        def commitMsg = "No Commits" // Default message if no commits are found
+
+        if (changeSet != null && changeSet.size() > 0) {
+          // Fetch the latest commit message
+          commitMsg = changeSet[0].items[0].msg
+        }
+
+        if (commitMsg != "No Commits") {
+          slackSend color: "good", message: "Deployment to K8 cluster done and artifact stored!", attachments: [[
+            color: 'good',
+            title: "BUILD DETAILS",
+            fields: [
+              [
+                title: "User",
+                value: "${env.BUILD_USER}",
+                short: true
+              ],
+              [
+                title: "BUILD NUMBER",
+                value: "${currentBuild.number}",
+                short: true
+              ],
+              [
+                title: "Changelog",
+                value: commitMsg,
+                color: "good"
+              ],
+              [
+                title: "JOB URL",
+                value: "${env.JOB_URL}",
+                short: true
+              ]
+            ]
+          ]]
+        } else {
+          // Send a message stating that there were no commits
+          slackSend color: "good", message: "Deployment to K8 cluster done and artifact stored! No commits in this build.", attachments: [[
+            color: 'good',
+            title: "BUILD DETAILS",
+            fields: [
+              [
+                title: "User",
+                value: "${env.BUILD_USER}",
+                short: true
+              ],
+              [
+                title: "BUILD NUMBER",
+                value: "${currentBuild.number}",
+                short: true
+              ],
+              [
+                title: "JOB URL",
+                value: "${env.JOB_URL}",
+                short: true
+              ]
+            ]
+          ]]
+        }
+      }
+    }
+
       
   failure {
       slackSend (color: "danger", message: "Deployment to K8 cluster failed!", attachments: [[
@@ -118,31 +150,6 @@ pipeline {
     )
   }
   }
-}
-
-def getChangelog() {
-    def branch = "${params.branch_name}"
-
-    def latestCommitId = sh(
-        script: "git rev-list -n 1 ${branch}",
-        returnStdout: true
-    ).trim()
-
-    if (latestCommitId) {
-        // Fetch the commit message for the latest commit on the selected branch
-        def changelog = sh(
-            script: "git show -s --format=%s ${latestCommitId}",
-            returnStdout: true
-        ).trim()
-
-        if (changelog) {
-            return changelog
-        }
-        else {
-          return "No Commits"
-        }
-    }
-
 }
 //jenkinsfile of branch-1
 // sample comment
