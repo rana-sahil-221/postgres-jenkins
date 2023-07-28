@@ -123,15 +123,15 @@ pipeline {
 def getChangelog() {
     def branch = "${params.branch_name}"
 
-    def hasChanges = sh(
-        script: "git rev-parse --quiet --verify ${branch}",
-        returnStatus: true
-    ) == 0
+    def latestCommitId = sh(
+        script: "git rev-list -n 1 ${branch}",
+        returnStdout: true
+    ).trim()
 
-     if (hasChanges) {
+    if (latestCommitId) {
         // Fetch the commit message for the latest commit on the selected branch
         def changelog = sh(
-            script: "git log -1 --pretty=format:'%s' ${branch}",
+            script: "git show -s --format=%s ${latestCommitId}",
             returnStdout: true
         ).trim()
 
