@@ -128,13 +128,13 @@ pipeline {
 }
 
 def getLatestCommitMessage(String branch) {
+    def scmVars = checkout scm
     def commitMessage = ""
-    def gitCommand = "git log -1 --pretty=%B"
-    def proc = "${gitCommand}".execute(null, new File(env.WORKSPACE))
-    proc.waitFor()
 
-    if (proc.exitValue() == 0) {
-        commitMessage = proc.text.trim()
+    scmVars.GIT_BRANCH.each {
+        if (it.name.endsWith("/${branch}")) {
+            commitMessage = it.revision.message
+        }
     }
 
     return commitMessage ?: "No Commits"
