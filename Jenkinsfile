@@ -121,7 +121,7 @@ pipeline {
 }
 
 def getChangelog() {
-    def branch = "origin/${params.branch_name}"
+    def branch = "${params.branch_name}"
     def changelog = sh(
         script: "git log -1 --pretty=format:'%s' ${branch}",
         returnStdout: true
