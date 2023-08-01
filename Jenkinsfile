@@ -13,7 +13,7 @@ pipeline {
         checkout scmGit(branches: [[name: '${branch_name}']], extensions: [], userRemoteConfigs: [[credentialsId: '9624a2a7-70af-4b64-9eca-892f819707cb', url: 'https://github.com/rana-sahil-221/postgres-jenkins.git']])
     }
     }
-    stage('Deploying Manifests to the K8 Cluster') {
+    stage('Deploying Manifests to the K8's Cluster') {
       steps {
         sh 'sudo kubectl --kubeconfig=${KUBECONFIG} apply -f ${WORKSPACE}/db-map.yaml'
         sh 'sudo kubectl --kubeconfig=${KUBECONFIG} apply -f ${WORKSPACE}/db-stateset.yaml'
