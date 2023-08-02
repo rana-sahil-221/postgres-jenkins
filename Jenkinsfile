@@ -67,6 +67,7 @@ pipeline {
             
                 slackSend color: "good", message: "Deployment to K8 cluster done and artifact stored!", attachments: [[
                     color: 'good',
+                    channel: '#jenkins-pipeline',
                     title: "BUILD DETAILS",
                     fields: [
                         [
@@ -98,6 +99,7 @@ pipeline {
   failure {
       slackSend (color: "danger", message: "Deployment to K8 cluster failed!", attachments: [[
         color: 'danger',
+        channel: '#jenkins-pipeline',
         title: "BUILD DETAILS",
         fields: [[
           title: "User",
